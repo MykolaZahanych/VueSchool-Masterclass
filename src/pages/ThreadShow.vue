@@ -1,23 +1,22 @@
 <template>
-  <div v-if="thread" class="col-large push-top">
+  <div class="col-large push-top">
     <h1>{{ thread.title }}</h1>
 
     <post-list :posts="threadPosts" />
-  </div>
-  <div v-else class="col-full text-center">
-    <h1>This thread does not exist</h1>
-    <router-link :to="{ name: 'Home' }">Read some cool threat</router-link>
+    <post-editor @save="addPost" />
   </div>
 </template>
 
 <script>
 import sourceData from '@/data.json'
 import PostList from '@/components/PostList'
+import PostEditor from '@/components/PostEditor'
 
 export default {
   name: 'ThreadShow',
   components: {
-    PostList
+    PostList,
+    PostEditor
   },
   props: {
     id: {
@@ -37,6 +36,17 @@ export default {
     },
     thread () {
       return this.threads.find((thread) => thread.id === this.id) // also available under this.$route.params.id
+    }
+  },
+  methods: {
+    addPost (eventData) {
+      const post = {
+        ...eventData.post,
+        threadId: this.id
+      }
+
+      this.posts.push(post)
+      this.thread.posts.push(post.id)
     }
   }
 }
