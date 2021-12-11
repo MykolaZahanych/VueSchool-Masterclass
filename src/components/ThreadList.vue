@@ -39,29 +39,29 @@
 </template>
 
 <script>
-import sourceData from "@/data.json";
+import sourceData from '@/data.json'
 export default {
   props: {
     threads: {
       type: Array,
-      required: true,
-    },
+      required: true
+    }
   },
-  data() {
+  data () {
     return {
       posts: sourceData.posts,
-      users: sourceData.users,
-    };
+      users: sourceData.users
+    }
   },
   methods: {
-    postById(postId) {
-      return this.posts.find((p) => p.id === postId);
+    postById (postId) {
+      return this.posts.find((p) => p.id === postId)
     },
-    userById(userId) {
-      return this.users.find((p) => p.id === userId);
-    },
-  },
-};
+    userById (userId) {
+      return this.users.find((p) => p.id === userId)
+    }
+  }
+}
 </script>
 
 <style scoped></style>

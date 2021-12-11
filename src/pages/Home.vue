@@ -4,29 +4,29 @@
 </template>
 
 <script>
-import ThreadList from "@/components/ThreadList";
-import sourceData from "@/data.json";
+import ThreadList from '@/components/ThreadList'
+import sourceData from '@/data.json'
 
 export default {
   components: {
-    ThreadList,
+    ThreadList
   },
-  data() {
+  data () {
     return {
       threads: sourceData.threads,
       posts: sourceData.posts,
-      users: sourceData.users,
-    };
+      users: sourceData.users
+    }
   },
   methods: {
-    postById(postId) {
-      return this.posts.find((p) => p.id === postId);
+    postById (postId) {
+      return this.posts.find((p) => p.id === postId)
     },
-    userById(userId) {
-      return this.users.find((p) => p.id === userId);
-    },
-  },
-};
+    userById (userId) {
+      return this.users.find((p) => p.id === userId)
+    }
+  }
+}
 </script>
 
 <style>
