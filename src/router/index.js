@@ -1,15 +1,15 @@
-import PageHome from "@/components/PageHome";
-import PageThreadShow from "@/components/PageThreadShow";
+import Home from "@/components/Home";
+import ThreadShow from "@/components/ThreadShow";
 import { createRouter, createWebHistory } from "vue-router";
-import PageNotFound from "@/components/PageNotFound";
+import NotFound from "@/components/NotFound";
 import sourceData from "@/data.json";
 
 const routes = [
-  { path: "/", name: "Home", component: PageHome },
+  { path: "/", name: "Home", component: Home },
   {
     path: "/thread/:id",
     name: "ThreadShow",
-    component: PageThreadShow,
+    component: ThreadShow,
     props: true,
     beforeEnter(to, from, next) {
       // check if threat exists
@@ -32,7 +32,7 @@ const routes = [
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
-    component: PageNotFound,
+    component: NotFound,
   },
 ];
 
