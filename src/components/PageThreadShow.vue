@@ -1,5 +1,5 @@
 <template>
-  <div class="col-large push-top">
+  <div v-if="thread" class="col-large push-top">
     <h1>{{ thread.title }}</h1>
 
     <div class="post-list">
@@ -33,6 +33,10 @@
         </div>
       </div>
     </div>
+  </div>
+  <div v-else class="col-full text-center">
+    <h1>This thread does not exist</h1>
+    <router-link :to="{ name: 'Home' }">Read some cool threat</router-link>
   </div>
 </template>
 
