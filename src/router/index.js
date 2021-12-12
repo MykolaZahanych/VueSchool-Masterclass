@@ -2,6 +2,7 @@ import Home from '@/pages/Home'
 import ThreadShow from '@/pages/ThreadShow'
 import Forum from '@/pages/Forum'
 import Category from '@/pages/Category'
+import Profile from '@/pages/Profile'
 import NotFound from '@/pages/NotFound'
 import { createRouter, createWebHistory } from 'vue-router'
 import sourceData from '@/data.json'
@@ -30,6 +31,11 @@ const routes = [
         })
       }
     }
+  },
+  {
+    path: '/me',
+    name: 'Profile',
+    component: Profile
   },
   {
     path: '/category/:id',
