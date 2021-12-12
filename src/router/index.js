@@ -1,7 +1,9 @@
 import Home from '@/pages/Home'
 import ThreadShow from '@/pages/ThreadShow'
-import { createRouter, createWebHistory } from 'vue-router'
+import Forum from '@/pages/Forum'
+import Category from '@/pages/Category'
 import NotFound from '@/pages/NotFound'
+import { createRouter, createWebHistory } from 'vue-router'
 import sourceData from '@/data.json'
 
 const routes = [
@@ -28,6 +30,18 @@ const routes = [
         })
       }
     }
+  },
+  {
+    path: '/category/:id',
+    name: 'Category',
+    component: Category,
+    props: true
+  },
+  {
+    path: '/forum/:id',
+    name: 'Forum',
+    component: Forum,
+    props: true
   },
   {
     path: '/:pathMatch(.*)*',

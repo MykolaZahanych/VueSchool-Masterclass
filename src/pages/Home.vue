@@ -1,21 +1,19 @@
 <template>
   <h1>Welcome to the Forum</h1>
-  <ThreadList :threads="threads" />
+  <CategoryList :categories="categories" />
 </template>
 
 <script>
-import ThreadList from '@/components/ThreadList'
+import CategoryList from '@/components/CategoryList'
 import sourceData from '@/data.json'
 
 export default {
   components: {
-    ThreadList
+    CategoryList
   },
   data () {
     return {
-      threads: sourceData.threads,
-      posts: sourceData.posts,
-      users: sourceData.users
+      categories: sourceData.categories
     }
   }
 }
@@ -154,7 +152,7 @@ export default {
   left: -25px;
   font-size: 42px;
   font-family: FontAwesome;
-  content: "\f10e";
+  content: '\f10e';
   color: #263959;
 }
 
@@ -206,7 +204,7 @@ export default {
   left: -20px;
   font-size: 42px;
   font-family: FontAwesome;
-  content: "\f10e";
+  content: '\f10e';
   color: #263959;
 }
 
@@ -265,7 +263,7 @@ export default {
   left: -25px;
   font-size: 42px;
   font-family: FontAwesome;
-  content: "\f10e";
+  content: '\f10e';
   color: #263959;
 }
 
