@@ -30,7 +30,9 @@
             <p class="text-xsmall">
               <a href="#">{{ userById(thread.userId).name }}</a>
             </p>
-            <p class="text-xsmall text-faded"><AppDate :timestamp="thread.publishedAt" /></p>
+            <p class="text-xsmall text-faded">
+              <AppDate :timestamp="thread.publishedAt" />
+            </p>
           </div>
         </div>
       </div>
@@ -39,8 +41,6 @@
 </template>
 
 <script>
-import sourceData from '@/data.json'
-
 export default {
   props: {
     threads: {
@@ -48,10 +48,12 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      posts: sourceData.posts,
-      users: sourceData.users
+  computed: {
+    posts () {
+      return this.$store.state.posts
+    },
+    users () {
+      return this.$store.state.users
     }
   },
   methods: {
