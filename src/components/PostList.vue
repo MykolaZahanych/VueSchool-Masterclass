@@ -18,13 +18,13 @@
       <div class="post-content">
         <div>
           <p>
-            {{ postById(post.id).text }}
+            {{ post.text }}
           </p>
         </div>
       </div>
 
       <div class="post-date text-faded">
-        {{ postById(post.id).publishedAt }}
+        <AppDate :timestamp="post.publishedAt" />
       </div>
     </div>
   </div>
@@ -48,9 +48,6 @@ export default {
   methods: {
     userById (userId) {
       return this.users.find((p) => p.id === userId)
-    },
-    postById (postId) {
-      return this.posts.find((p) => p.id === postId)
     }
   }
 }
