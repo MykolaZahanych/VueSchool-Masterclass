@@ -8,6 +8,7 @@ import ThreadEdit from '@/pages/ThreadEdit'
 import NotFound from '@/pages/NotFound'
 import { createRouter, createWebHistory } from 'vue-router'
 import sourceData from '@/data.json'
+import { findById } from '@/helpers'
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
@@ -18,9 +19,7 @@ const routes = [
     props: true,
     beforeEnter (to, from, next) {
       // check if threat exists
-      const threadExists = sourceData.threads.find(
-        (thread) => thread.id === to.params.id
-      )
+      const threadExists = findById(sourceData.threads, to.params.id)
       if (threadExists) {
         return next()
       } else {

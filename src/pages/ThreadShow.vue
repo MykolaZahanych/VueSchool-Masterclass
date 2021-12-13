@@ -19,6 +19,7 @@
 <script>
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
+import { findById } from '@/helpers'
 
 export default {
   name: 'ThreadShow',
@@ -43,7 +44,7 @@ export default {
       return this.posts.filter((post) => post.threadId === this.id)
     },
     thread () {
-      return this.threads.find((thread) => thread.id === this.id) // also available under this.$route.params.id
+      return findById(this.threads, this.id)
     }
   },
   methods: {
