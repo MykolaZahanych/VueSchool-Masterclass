@@ -10,6 +10,11 @@ export default {
   components: {
     CategoryList
   },
+  async beforeCreate () {
+    const categories = await this.$store.dispatch('fetchAllCategories')
+    const forumIds = categories.map((category) => category.forums).flat()
+    this.$store.dispatch('fetchForums', { ids: forumIds })
+  },
   computed: {
     categories () {
       return this.$store.state.categories
