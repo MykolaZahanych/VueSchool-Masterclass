@@ -52,7 +52,7 @@ export default {
         await this.$store.dispatch('signInWithEmailAndPassword', {
           ...this.form
         })
-        this.$router.push('/')
+        this.successRedirect()
       } catch (error) {
         alert(error.message)
       }

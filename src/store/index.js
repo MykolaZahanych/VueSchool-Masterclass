@@ -11,6 +11,7 @@ export default createStore({
     users: [],
     authId: null,
     authUserUnsubscribe: null,
+    authObserverUnsubscribe: null,
     unsubscribes: []
   },
   getters,
