@@ -1,4 +1,4 @@
-import firebase from 'firebase'
+import firebase from '@/helpers/firebase'
 import { makeFetchItemAction, makeFetchItemsAction } from '@/helpers'
 
 export default {
@@ -11,6 +11,7 @@ export default {
     async createPost ({ commit, state, rootState }, post) {
       post.userId = rootState.auth.authId
       post.publishedAt = firebase.firestore.FieldValue.serverTimestamp()
+      post.firstInThread = post.firstInThread || false
       const batch = firebase.firestore().batch()
       const postRef = firebase.firestore().collection('posts').doc()
       const threadRef = firebase
@@ -22,12 +23,15 @@ export default {
         .collection('users')
         .doc(rootState.auth.authId)
       batch.set(postRef, post)
-      batch.update(threadRef, {
-        posts: firebase.firestore.FieldValue.arrayUnion(postRef.id),
-        contributors: firebase.firestore.FieldValue.arrayUnion(
+      const threadUpdates = {
+        posts: firebase.firestore.FieldValue.arrayUnion(postRef.id)
+      }
+      if (!post.firstInThread) {
+        threadUpdates.contributors = firebase.firestore.FieldValue.arrayUnion(
           rootState.auth.authId
         )
-      })
+      }
+      batch.update(threadRef, threadUpdates)
       batch.update(userRef, {
         postsCount: firebase.firestore.FieldValue.increment(1)
       })
@@ -43,11 +47,13 @@ export default {
         { childId: newPost.id, parentId: post.threadId },
         { root: true }
       ) // append post to thread
-      commit(
-        'threads/appendContributorToThread',
-        { childId: rootState.auth.authId, parentId: post.threadId },
-        { root: true }
-      )
+      if (!post.firstInThread) {
+        commit(
+          'threads/appendContributorToThread',
+          { childId: rootState.auth.authId, parentId: post.threadId },
+          { root: true }
+        )
+      }
     },
     async updatePost ({ commit, state, rootState }, { text, id }) {
       const post = {
