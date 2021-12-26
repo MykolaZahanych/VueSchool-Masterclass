@@ -21,7 +21,7 @@
         <div class="activity">
           <p class="replies-count">{{ thread.repliesCount }} replies</p>
 
-          <img
+          <AppAvatarImg
             class="avatar-medium"
             :src="userById(thread.userId).avatar"
             alt=""

@@ -24,7 +24,7 @@
             v-click-outside="() => (userDropdownOpen = false)"
             v-page-scroll="() => (mobileNavMenu = false)"
           >
-            <img
+            <AppAvatarImg
               class="avatar-small"
               :src="authUser.avatar"
               :alt="`${authUser.name} profile picture`"

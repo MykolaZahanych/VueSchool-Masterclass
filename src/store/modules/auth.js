@@ -1,4 +1,6 @@
 import firebase from 'firebase'
+import useNotifications from '@/composables/useNotifications'
+
 export default {
   namespaced: true,
   state: {
@@ -27,9 +29,41 @@ export default {
         commit('setAuthObserverUnsubscribe', unsubscribe)
       })
     },
-    async registerUserWithEmailAndPassword ({ dispatch }, { avatar = null, email, name, username, password }) {
-      const result = await firebase.auth().createUserWithEmailAndPassword(email, password)
-      await dispatch('users/createUser', { id: result.user.uid, email, name, username, avatar }, { root: true })
+    async registerUserWithEmailAndPassword (
+      { dispatch },
+      { avatar = null, email, name, username, password }
+    ) {
+      const result = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password)
+      avatar = await dispatch('uploadAvatar', {
+        authId: result.user.uid,
+        file: avatar
+      })
+      await dispatch(
+        'users/createUser',
+        { id: result.user.uid, email, name, username, avatar },
+        { root: true }
+      )
+    },
+    async uploadAvatar ({ state }, { authId, file }) {
+      if (!file) return null
+      authId = authId || state.authId
+      try {
+        const storageBucket = firebase
+          .storage()
+          .ref()
+          .child(`uploads/${authId}/images/${Date.now()}-${file.name}`)
+        const snapshot = await storageBucket.put(file)
+        const url = await snapshot.ref.getDownloadURL()
+        return url
+      } catch (error) {
+        const { addNotification } = useNotifications()
+        addNotification({
+          message: 'Error uploading avatar image',
+          type: 'error'
+        })
+      }
     },
     signInWithEmailAndPassword (context, { email, password }) {
       return firebase.auth().signInWithEmailAndPassword(email, password)
@@ -42,29 +76,37 @@ export default {
     fetchAuthUser: async ({ dispatch, state, commit }) => {
       const userId = firebase.auth().currentUser?.uid
       if (!userId) return
-      await dispatch('fetchItem', {
-        emoji: '🙋',
-        resource: 'users',
-        id: userId,
-        handleUnsubscribe: (unsubscribe) => {
-          commit('setAuthUserUnsubscribe', unsubscribe)
-        }
-      },
-      { root: true }
+      await dispatch(
+        'fetchItem',
+        {
+          emoji: '🙋',
+          resource: 'users',
+          id: userId,
+          handleUnsubscribe: (unsubscribe) => {
+            commit('setAuthUserUnsubscribe', unsubscribe)
+          }
+        },
+        { root: true }
       )
       commit('setAuthId', userId)
     },
     async fetchAuthUsersPosts ({ commit, state }, { startAfter }) {
-      let query = await firebase.firestore().collection('posts')
+      let query = await firebase
+        .firestore()
+        .collection('posts')
         .where('userId', '==', state.authId)
         .orderBy('publishedAt', 'desc')
         .limit(10)
       if (startAfter) {
-        const doc = await firebase.firestore().collection('posts').doc(startAfter.id).get()
+        const doc = await firebase
+          .firestore()
+          .collection('posts')
+          .doc(startAfter.id)
+          .get()
         query = query.startAfter(doc)
       }
       const posts = await query.get()
-      posts.forEach(item => {
+      posts.forEach((item) => {
         commit('setItem', { resource: 'posts', item }, { root: true })
       })
     },
