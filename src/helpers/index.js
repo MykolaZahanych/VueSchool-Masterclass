@@ -21,7 +21,9 @@ export const makeAppendChildToParentMutation = ({ parent, child }) => {
   return (state, { childId, parentId }) => {
     const resource = findById(state.items, parentId)
     if (!resource) {
-      console.warn(`Appending ${child} ${childId} to ${parent} ${parentId} failed because the parent didn't exist`)
+      console.warn(
+        `Appending ${child} ${childId} to ${parent} ${parentId} failed because the parent didn't exist`
+      )
       return
     }
     resource[child] = resource[child] || []
@@ -30,4 +32,12 @@ export const makeAppendChildToParentMutation = ({ parent, child }) => {
       resource[child].push(childId)
     }
   }
+}
+export const makeFetchItemAction = ({ emoji, resource }) => {
+  return ({ dispatch }, payload) =>
+    dispatch('fetchItem', { emoji, resource, ...payload }, { root: true })
+}
+export const makeFetchItemsAction = ({ emoji, resource }) => {
+  return ({ dispatch }, payload) =>
+    dispatch('fetchItems', { emoji, resource, ...payload }, { root: true })
 }

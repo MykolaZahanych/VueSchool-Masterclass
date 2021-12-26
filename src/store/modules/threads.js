@@ -1,4 +1,10 @@
-import { findById, docToResource, makeAppendChildToParentMutation } from '@/helpers'
+import {
+  findById,
+  docToResource,
+  makeAppendChildToParentMutation,
+  makeFetchItemsAction,
+  makeFetchItemAction
+} from '@/helpers'
 import firebase from 'firebase'
 import chunk from 'lodash/chunk'
 
@@ -28,7 +34,10 @@ export default {
     }
   },
   actions: {
-    async createThread ({ commit, state, dispatch, rootState }, { text, title, forumId }) {
+    async createThread (
+      { commit, state, dispatch, rootState },
+      { text, title, forumId }
+    ) {
       const userId = rootState.auth.authId
       const publishedAt = firebase.firestore.FieldValue.serverTimestamp()
       const threadRef = firebase.firestore().collection('threads').doc()
@@ -47,15 +56,29 @@ export default {
       await batch.commit()
       const newThread = await threadRef.get()
 
-      commit('setItem', {
-        resource: 'threads',
-        item: { ...newThread.data(), id: newThread.id }
-      },
-      { root: true }
+      commit(
+        'setItem',
+        {
+          resource: 'threads',
+          item: { ...newThread.data(), id: newThread.id }
+        },
+        { root: true }
       )
-      commit('users/appendThreadToUser', { parentId: userId, childId: threadRef.id }, { root: true })
-      commit('forums/appendThreadToForum', { parentId: forumId, childId: threadRef.id }, { root: true })
-      await dispatch('posts/createPost', { text, threadId: threadRef.id }, { root: true })
+      commit(
+        'users/appendThreadToUser',
+        { parentId: userId, childId: threadRef.id },
+        { root: true }
+      )
+      commit(
+        'forums/appendThreadToForum',
+        { parentId: forumId, childId: threadRef.id },
+        { root: true }
+      )
+      await dispatch(
+        'posts/createPost',
+        { text, threadId: threadRef.id },
+        { root: true }
+      )
       return findById(state.items, threadRef.id)
     },
     async updateThread ({ commit, state, rootState }, { title, text, id }) {
@@ -71,12 +94,16 @@ export default {
       await batch.commit()
       newThread = await threadRef.get()
       newPost = await postRef.get()
-      commit('setItem', { resource: 'threads', item: newThread }, { root: true })
+      commit(
+        'setItem',
+        { resource: 'threads', item: newThread },
+        { root: true }
+      )
       commit('setItem', { resource: 'posts', item: newPost }, { root: true })
       return docToResource(newThread)
     },
-    fetchThread: ({ dispatch }, { id }) => dispatch('fetchItem', { emoji: '📄', resource: 'threads', id }, { root: true }),
-    fetchThreads: ({ dispatch }, { ids }) => dispatch('fetchItems', { resource: 'threads', ids, emoji: '📄' }, { root: true }),
+    fetchThread: makeFetchItemAction({ emoji: '📄', resource: 'threads' }),
+    fetchThreads: makeFetchItemsAction({ emoji: '📄', resource: 'threads' }),
     fetchThreadsByPage: ({ dispatch, commit }, { ids, page, perPage = 10 }) => {
       commit('clearThreads')
       const chunks = chunk(ids, perPage)
@@ -85,8 +112,14 @@ export default {
     }
   },
   mutations: {
-    appendPostToThread: makeAppendChildToParentMutation({ parent: 'threads', child: 'posts' }),
-    appendContributorToThread: makeAppendChildToParentMutation({ parent: 'threads', child: 'contributors' }),
+    appendPostToThread: makeAppendChildToParentMutation({
+      parent: 'threads',
+      child: 'posts'
+    }),
+    appendContributorToThread: makeAppendChildToParentMutation({
+      parent: 'threads',
+      child: 'contributors'
+    }),
     clearThreads (state) {
       state.items = []
     }
