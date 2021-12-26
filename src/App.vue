@@ -1,7 +1,12 @@
 <template>
   <the-navbar />
   <div class="container">
-    <router-view v-show="showPage" @ready="onPageReady" :key="$route.path" />
+    <router-view
+      v-show="showPage"
+      @ready="onPageReady"
+      :key="`${$route.path}${JSON.stringify($route.query)}`"
+    />
+    />
     <AppSpinner v-show="!showPage" />
   </div>
 </template>
@@ -42,8 +47,8 @@ export default {
 
 <style>
 @import 'assets/style.css';
-@import "~nprogress/nprogress.css";
-#nprogress .bar{
-  background: #57AD8D !important;
+@import '~nprogress/nprogress.css';
+#nprogress .bar {
+  background: #57ad8d !important;
 }
 </style>
